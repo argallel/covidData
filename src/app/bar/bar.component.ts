@@ -7,13 +7,6 @@ import * as d3 from 'd3';
   styleUrls: ['./bar.component.css']
 })
 export class BarComponent implements OnInit {
-  private data = [
-    { "Framework": "Vue", "Stars": "166443", "Released": "2014" },
-    { "Framework": "React", "Stars": "150793", "Released": "2013" },
-    { "Framework": "Angular", "Stars": "62342", "Released": "2016" },
-    { "Framework": "Backbone", "Stars": "27647", "Released": "2010" },
-    { "Framework": "Ember", "Stars": "21471", "Released": "2011" },
-  ];
 
   private svg;
   private margin = 50;
@@ -24,7 +17,7 @@ export class BarComponent implements OnInit {
 
   ngOnInit(): void {
     this.createSVG();
-    this.drawBars(this.data);
+    d3.json('https://api.apify.com/v2/key-value-stores/fabbocwKrtxSDf96h/records/LATEST?disableRedirect=true').then(data => this.drawBars(data['infectedByRegion']));
   }
 
   private createSVG(): void {
@@ -37,14 +30,14 @@ export class BarComponent implements OnInit {
   }
 
   private drawBars(data: any[]): void {
-    // Create the X-axis band scale
-    const x = d3.scaleBand()
+       // Create the X-axis band scale
+      const x = d3.scaleBand()
       .range([0, this.width])
-      .domain(data.map(d => d.Framework))
-      .padding(0.2);
+      .domain(data.map(d => d.region))
+      .padding(0.5);
 
     // Draw the X-axis on the DOM
-    this.svg.append("g")
+      this.svg.append("g")
       .attr("transform", "translate(0," + this.height + ")")
       .call(d3.axisBottom(x))
       .selectAll("text")
@@ -53,7 +46,7 @@ export class BarComponent implements OnInit {
 
     // Create the Y-axis band scale
     const y = d3.scaleLinear()
-      .domain([0, 200000])
+      .domain([0, 700000])
       .range([this.height, 0]);
 
     // Draw the Y-axis on the DOM
@@ -65,10 +58,10 @@ export class BarComponent implements OnInit {
       .data(data)
       .enter()
       .append("rect")
-      .attr("x", d => x(d.Framework))
-      .attr("y", d => y(d.Stars))
+      .attr("x", d => x(d.region))
+      .attr("y", d => y(d.infectedCount))
       .attr("width", x.bandwidth())
-      .attr("height", (d) => this.height - y(d.Stars))
+      .attr("height", (d) => this.height - y(d.infectedCount))
       .attr("fill", "#d04a35");
   }
 
