@@ -10,8 +10,8 @@ export class BarComponent implements OnInit {
 
   private svg;
   private margin = 50;
-  private width = 750 - (this.margin * 2);
-  private height = 400 - (this.margin * 2);
+  private width = 1000 - (this.margin * 2);
+  private height = 500 - (this.margin * 2);
 
   constructor() { }
 
@@ -24,12 +24,13 @@ export class BarComponent implements OnInit {
       this.svg = d3.select("figure#bar")
       .append("svg")
       .attr("width", this.width + (this.margin * 2))
-      .attr("height", this.height + (this.margin * 2))
+      .attr("height", this.height + (this.margin * 4))
       .append("g")
-      .attr("transform", "translate(" + this.margin + "," + this.margin + ")");
+      .attr("transform", "translate(" + this.margin*2 + "," + this.margin + ")");
   }
 
   private drawBars(data: any[]): void {
+
        // Create the X-axis band scale
       const x = d3.scaleBand()
       .range([0, this.width])
@@ -48,6 +49,7 @@ export class BarComponent implements OnInit {
     const y = d3.scaleLinear()
       .domain([0, 700000])
       .range([this.height, 0]);
+      
 
     // Draw the Y-axis on the DOM
     this.svg.append("g")
@@ -62,7 +64,32 @@ export class BarComponent implements OnInit {
       .attr("y", d => y(d.infectedCount))
       .attr("width", x.bandwidth())
       .attr("height", (d) => this.height - y(d.infectedCount))
-      .attr("fill", "#d04a35");
+      .attr("fill", "#d04a35")
+
+    // Add label bars for quantity
+    this.svg.selectAll(".batText")
+      .data(data)
+      .enter()
+      .append("text")
+      .attr("x", d => x(d.region))
+      .attr("y", d => y(d.infectedCount))
+      .text(d => d.infectedCount);
+
+    //Add the x axis label
+    this.svg.append("text")
+      .attr("class", "x label")
+      .attr("x", this.width / 2 - this.width*0.1)
+      .attr("y", this.height + this.height/4)
+      .text("Region")
+
+    //Add the y axis label
+    this.svg.append("text")
+      .attr("class", "y label")
+      .attr("x", 0 - this.height/2 - this.height*0.1)
+      .attr("y", 0 - this.width*0.07)
+      .attr("transform", "rotate(-90)")
+      .text("People Infected")
+
   }
 
 }
