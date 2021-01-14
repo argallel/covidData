@@ -43,6 +43,7 @@ export class BarComponent implements OnInit {
       .call(d3.axisBottom(x))
       .selectAll("text")
       .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("font-family", "Helvetica")
       .style("text-anchor", "end");
 
     // Create the Y-axis band scale
@@ -53,7 +54,8 @@ export class BarComponent implements OnInit {
 
     // Draw the Y-axis on the DOM
     this.svg.append("g")
-      .call(d3.axisLeft(y));
+      .call(d3.axisLeft(y))
+      .style("font-family", "Helvetica");
 
     // Create and fill the bars
     this.svg.selectAll("bars")
@@ -64,22 +66,24 @@ export class BarComponent implements OnInit {
       .attr("y", d => y(d.infectedCount))
       .attr("width", x.bandwidth())
       .attr("height", (d) => this.height - y(d.infectedCount))
-      .attr("fill", "#d04a35")
+      .attr("fill", "#bbe0e8")
 
     // Add label bars for quantity
     this.svg.selectAll(".batText")
       .data(data)
       .enter()
       .append("text")
-      .attr("x", d => x(d.region))
-      .attr("y", d => y(d.infectedCount))
+      .attr("x", d => x(d.region) - 10)
+      .attr("y", d => y(d.infectedCount) - 2)
+      .style("font-family", "Helvetica")
       .text(d => d.infectedCount);
 
     //Add the x axis label
     this.svg.append("text")
       .attr("class", "x label")
       .attr("x", this.width / 2 - this.width*0.1)
-      .attr("y", this.height + this.height/4)
+      .attr("y", this.height + this.height / 4)
+      .style("font-family", "Helvetica")
       .text("Region")
 
     //Add the y axis label
@@ -88,6 +92,7 @@ export class BarComponent implements OnInit {
       .attr("x", 0 - this.height/2 - this.height*0.1)
       .attr("y", 0 - this.width*0.07)
       .attr("transform", "rotate(-90)")
+      .style("font-family", "Helvetica")
       .text("People Infected")
 
   }
